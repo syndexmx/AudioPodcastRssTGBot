@@ -11,5 +11,5 @@ public interface RssParser {
 
     String getChannelTitle(String rss);
 
-    List<Podcast> parseRss(String string, Channel owner);
+    List<Podcast> getPodcastListFromRss(String string, Channel owner);
 }

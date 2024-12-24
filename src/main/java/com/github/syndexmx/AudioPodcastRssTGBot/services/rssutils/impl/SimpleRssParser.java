@@ -13,7 +13,7 @@ import java.util.List;
 @Component
 public class SimpleRssParser implements RssParser {
 
-    Integer DESCRIPTION_LENGTH_LIMIT = 1024;
+    Integer DESCRIPTION_LENGTH_LIMIT = 224;
 
     @Override
     public String getChannelTitle(String rss) {
@@ -23,7 +23,7 @@ public class SimpleRssParser implements RssParser {
     }
 
     @Override
-    public List<Podcast> parseRss(String rssText, Channel owner) {
+    public List<Podcast> getPodcastListFromRss(String rssText, Channel owner) {
         List<Podcast> outList = new ArrayList<>();
         String text = rssText;
         StringBuilder parsedRss = new StringBuilder();
