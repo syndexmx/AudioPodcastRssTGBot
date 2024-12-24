@@ -1,9 +1,11 @@
 package com.github.syndexmx.AudioPodcastRssTGBot.services.impl;
 
 import com.github.syndexmx.AudioPodcastRssTGBot.domain.Channel;
+import com.github.syndexmx.AudioPodcastRssTGBot.domain.Podcast;
 import com.github.syndexmx.AudioPodcastRssTGBot.domain.Subscriber;
 import com.github.syndexmx.AudioPodcastRssTGBot.netcontroller.RssFetcher;
 import com.github.syndexmx.AudioPodcastRssTGBot.repository.ChannelRepository;
+import com.github.syndexmx.AudioPodcastRssTGBot.repository.PodcastRepository;
 import com.github.syndexmx.AudioPodcastRssTGBot.repository.SubscriberRepository;
 import com.github.syndexmx.AudioPodcastRssTGBot.services.SubscriberService;
 import com.github.syndexmx.AudioPodcastRssTGBot.services.rssutils.RssParser;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,21 +25,24 @@ public class SubscriberServiceImpl implements SubscriberService {
     private SubscriberRepository subscriberRepository;
     private ChannelRepository channelRepository;
     private final RssParser rssParser;
+    private final PodcastRepository podcastRepository;
 
     public SubscriberServiceImpl(@Autowired RssFetcher rssFetcher,
                                  @Autowired SubscriberRepository subscriberRepository,
                                  @Autowired ChannelRepository channelRepository,
-                                 @Autowired RssParser rssParser) {
+                                 @Autowired RssParser rssParser,
+                                 @Autowired PodcastRepository podcastRepository) {
         this.rssFetcher = rssFetcher;
         this.subscriberRepository = subscriberRepository;
         this.channelRepository = channelRepository;
         this.rssParser = rssParser;
+        this.podcastRepository = podcastRepository;
     }
 
 
     @Override
     public String addChannel(Long subscriberId, String url) {
-        System.out.println(subscriberId.toString() + " : add : " + url);
+        log.info(subscriberId.toString() + " : add : " + url);
         Optional<Subscriber> subscriberOptional = subscriberRepository.findById(subscriberId.toString());
         Subscriber subscriber;
         if (subscriberOptional.isEmpty()) {
@@ -62,6 +68,10 @@ public class SubscriberServiceImpl implements SubscriberService {
             channel = channelOptional.get();
         }
         subscriber.getChannels().add(channel);
+        String rss = rssFetcher.getPage(url);
+        List<Podcast> podcastList = rssParser.getPodcastListFromRss(rss, channel);
+        podcastRepository.saveAll(podcastList);
+        log.info(podcastList.size() + " podcasts found");
         return channel.getTitle();
     }
 }
