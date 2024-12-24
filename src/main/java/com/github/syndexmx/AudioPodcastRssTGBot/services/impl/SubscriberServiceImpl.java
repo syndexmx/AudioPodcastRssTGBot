@@ -6,11 +6,11 @@ import com.github.syndexmx.AudioPodcastRssTGBot.netcontroller.RssFetcher;
 import com.github.syndexmx.AudioPodcastRssTGBot.repository.ChannelRepository;
 import com.github.syndexmx.AudioPodcastRssTGBot.repository.SubscriberRepository;
 import com.github.syndexmx.AudioPodcastRssTGBot.services.SubscriberService;
+import com.github.syndexmx.AudioPodcastRssTGBot.services.rssutils.RssParser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.lang.model.type.ArrayType;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -21,13 +21,16 @@ public class SubscriberServiceImpl implements SubscriberService {
     private RssFetcher rssFetcher;
     private SubscriberRepository subscriberRepository;
     private ChannelRepository channelRepository;
+    private final RssParser rssParser;
 
     public SubscriberServiceImpl(@Autowired RssFetcher rssFetcher,
                                  @Autowired SubscriberRepository subscriberRepository,
-                                 @Autowired ChannelRepository channelRepository) {
+                                 @Autowired ChannelRepository channelRepository,
+                                 @Autowired RssParser rssParser) {
         this.rssFetcher = rssFetcher;
         this.subscriberRepository = subscriberRepository;
         this.channelRepository = channelRepository;
+        this.rssParser = rssParser;
     }
 
 
@@ -48,16 +51,17 @@ public class SubscriberServiceImpl implements SubscriberService {
         Optional<Channel> channelOptional = channelRepository.findById(url);
         Channel channel;
         if (channelOptional.isEmpty()) {
+            String rss = rssFetcher.getPage(url);
             channel = Channel.builder()
-                    .channelName(url)
+                    .title(rssParser.getChannelTitle(rss))
                     .url(url)
-                    .compressed(url)
+                    .compressed(rssParser.getChannelTitle(rss).replaceAll(" ", ""))
                     .build();
             channel = channelRepository.save(channel);
         } else {
             channel = channelOptional.get();
         }
         subscriber.getChannels().add(channel);
-        return channel.getChannelName();
+        return channel.getTitle();
     }
 }

@@ -24,10 +24,10 @@ public class Podcast {
     String title;
     String description;
 
-    Date date;
+    String date;
 
     @ManyToOne
             @JoinColumn(name = "url")
-    Podcast ownerChannel;
+    Channel ownerChannel;
 
 }
