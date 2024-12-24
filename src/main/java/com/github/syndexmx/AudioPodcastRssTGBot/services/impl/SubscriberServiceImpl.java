@@ -62,6 +62,7 @@ public class SubscriberServiceImpl implements SubscriberService {
                     .title(rssParser.getChannelTitle(rss))
                     .url(url)
                     .compressed(rssParser.getChannelTitle(rss).replaceAll(" ", ""))
+                    //.subscribers(List.of(subscriber))
                     .build();
             channel = channelRepository.save(channel);
         } else {
@@ -70,6 +71,10 @@ public class SubscriberServiceImpl implements SubscriberService {
         subscriber.getChannels().add(channel);
         String rss = rssFetcher.getPage(url);
         List<Podcast> podcastList = rssParser.getPodcastListFromRss(rss, channel);
+
+        // Temporary for debuggung reasons
+        podcastList = podcastList.stream().skip(1).toList();
+
         podcastRepository.saveAll(podcastList);
         log.info(podcastList.size() + " podcasts found");
         return channel.getTitle();

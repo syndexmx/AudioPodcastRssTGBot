@@ -22,6 +22,9 @@ public class Channel {
     String title;
     String compressed;
 
+    @ManyToMany
+    List<Subscriber> subscribers;
+
     @OneToMany
     List<Podcast> podcasts;
 }
