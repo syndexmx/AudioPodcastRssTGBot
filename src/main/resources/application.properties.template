@@ -1,0 +1,17 @@
+spring.application.name=AudioPodcastRssTGBot
+
+tg-bot.name=TG_BOT_MBot
+tg-bot.token=TG_BOT_TOKEN
+
+#DataSource
+spring.datasource.url=jdbc:h2:mem:PODCASTS_DATABASE_NAME
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.username=USER_NAME
+spring.datasource.password=USER_PASSWORD
+spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+
+# Show or not log for each sql query
+# Hibernate ddl auto (create, create-drop, update)
+spring.jpa.hibernate.ddl-auto = update
+
+web-monitor.update-interval.ms=5000
