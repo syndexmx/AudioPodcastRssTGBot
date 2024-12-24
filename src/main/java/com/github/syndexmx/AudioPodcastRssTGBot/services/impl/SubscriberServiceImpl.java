@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.lang.model.type.ArrayType;
 import java.util.ArrayList;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -21,10 +22,9 @@ public class SubscriberServiceImpl implements SubscriberService {
     private SubscriberRepository subscriberRepository;
     private ChannelRepository channelRepository;
 
-    @Autowired
-    public SubscriberServiceImpl(RssFetcher rssFetcher,
-                                 SubscriberRepository subscriberRepository,
-                                 ChannelRepository channelRepository) {
+    public SubscriberServiceImpl(@Autowired RssFetcher rssFetcher,
+                                 @Autowired SubscriberRepository subscriberRepository,
+                                 @Autowired ChannelRepository channelRepository) {
         this.rssFetcher = rssFetcher;
         this.subscriberRepository = subscriberRepository;
         this.channelRepository = channelRepository;
@@ -34,20 +34,28 @@ public class SubscriberServiceImpl implements SubscriberService {
     @Override
     public String addChannel(Long subscriberId, String url) {
         System.out.println(subscriberId.toString() + " : add : " + url);
-        Subscriber subscriber = subscriberRepository.getReferenceById(subscriberId.toString());
-        if (subscriber == null) {
+        Optional<Subscriber> subscriberOptional = subscriberRepository.findById(subscriberId.toString());
+        Subscriber subscriber;
+        if (subscriberOptional.isEmpty()) {
             subscriber = Subscriber.builder()
                     .id(subscriberId)
                     .channels(new ArrayList<Channel>())
                     .build();
+            subscriber = subscriberRepository.save(subscriber);
+        } else {
+            subscriber = subscriberOptional.get();
         }
-        Channel channel = channelRepository.getReferenceById(url);
-        if (channel == null) {
+        Optional<Channel> channelOptional = channelRepository.findById(url);
+        Channel channel;
+        if (channelOptional.isEmpty()) {
             channel = Channel.builder()
                     .channelName(url)
                     .url(url)
                     .compressed(url)
                     .build();
+            channel = channelRepository.save(channel);
+        } else {
+            channel = channelOptional.get();
         }
         subscriber.getChannels().add(channel);
         return channel.getChannelName();

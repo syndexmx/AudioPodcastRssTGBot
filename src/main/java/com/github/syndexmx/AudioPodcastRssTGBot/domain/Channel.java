@@ -1,9 +1,7 @@
 package com.github.syndexmx.AudioPodcastRssTGBot.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @Builder
+@Table(name= "channels")
 public class Channel {
 
     @Id
