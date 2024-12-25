@@ -99,6 +99,15 @@ public class TgController extends TelegramLongPollingBot {
             execute(sender);
         } catch (TelegramApiException e) {
             log.error("Telegrambot Exception : " + e.getMessage());
+            SendMessage message = new SendMessage(); // Create a SendMessage object with mandatory fields
+            message.setChatId(chatId);
+            message.setText("File sending unsuccessful : " + url);
+            message.setParseMode("markdown");
+            try {
+                execute(message); // Call method to send the message
+            } catch (TelegramApiException ee) {
+                ee.printStackTrace();
+            }
         }
     }
 
