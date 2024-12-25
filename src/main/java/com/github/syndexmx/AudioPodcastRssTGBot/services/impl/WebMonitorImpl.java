@@ -81,9 +81,18 @@ public class WebMonitorImpl implements WebMonitor {
             podcastRepository.saveAll(newPodcastsList);
             for (Podcast podcast : newPodcastsList) {
                 log.info("New podcast found : " + podcast.getTitle());
-                    for (Subscriber subscriber : channel.getSubscribers()) {
+                List<Subscriber> subscribersList = subscriberRepository.findAll();
+                    for (Subscriber subscriber : subscribersList) {
                         // TODO : Bring the podcast file to the subscriber
-                        tgController.sendMessage(podcast.getTitle(), subscriber.getId());
+                        boolean hasChannel = false;
+                        for (Channel subscribedChannel : subscriber.getChannels()) {
+                            if (subscribedChannel.getUrl().equals(channel.getUrl())) {
+                                hasChannel = true;
+                            }
+                        }
+                        if (hasChannel) {
+                            tgController.sendMessage(podcast.getTitle(), subscriber.getId());
+                        }
                     }
             }
         }
