@@ -68,14 +68,14 @@ public class SubscriberServiceImpl implements SubscriberService {
         } else {
             channel = channelOptional.get();
         }
-        subscriber.getChannels().add(channel);
         String rss = rssFetcher.getPage(url);
         List<Podcast> podcastList = rssParser.getPodcastListFromRss(rss, channel);
 
         // Temporary for debuggung reasons
         podcastList = podcastList.stream().skip(1).toList();
-
         podcastRepository.saveAll(podcastList);
+        subscriber.getChannels().add(channel);
+        subscriberRepository.save(subscriber);
         log.info(podcastList.size() + " podcasts found");
         return channel.getTitle();
     }

@@ -83,7 +83,7 @@ public class WebMonitorImpl implements WebMonitor {
                 log.info("New podcast found : " + podcast.getTitle());
                 List<Subscriber> subscribersList = subscriberRepository.findAll();
                     for (Subscriber subscriber : subscribersList) {
-                        // TODO : Bring the podcast file to the subscriber
+                        log.info("Checking subscriber : " + subscriber.toString());
                         boolean hasChannel = false;
                         for (Channel subscribedChannel : subscriber.getChannels()) {
                             if (subscribedChannel.getUrl().equals(channel.getUrl())) {
