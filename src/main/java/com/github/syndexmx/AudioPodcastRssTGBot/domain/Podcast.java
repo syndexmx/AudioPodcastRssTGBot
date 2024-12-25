@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @AllArgsConstructor
@@ -30,4 +31,16 @@ public class Podcast {
             @JoinColumn(name = "url")
     Channel ownerChannel;
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Podcast podcast = (Podcast) o;
+        return Objects.equals(podcastUrl, podcast.podcastUrl);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(podcastUrl);
+    }
 }
