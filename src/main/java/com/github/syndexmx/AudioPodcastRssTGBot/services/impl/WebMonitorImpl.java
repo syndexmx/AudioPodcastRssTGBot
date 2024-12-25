@@ -92,6 +92,8 @@ public class WebMonitorImpl implements WebMonitor {
                         if (hasChannel) {
                             tgController.sendMessage(podcast.getTitle() + "\n" + podcast.getPodcastUrl(),
                                     subscriber.getId());
+                            tgController.sendFile(subscriber.getId(), podcast.getPodcastUrl(),
+                                    podcast.getTitle());
                         }
                     }
             }
