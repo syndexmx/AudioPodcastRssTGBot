@@ -83,7 +83,6 @@ public class WebMonitorImpl implements WebMonitor {
                 log.info("New podcast found : " + podcast.getTitle());
                 List<Subscriber> subscribersList = subscriberRepository.findAll();
                     for (Subscriber subscriber : subscribersList) {
-                        log.info("Checking subscriber : " + subscriber.toString());
                         boolean hasChannel = false;
                         for (Channel subscribedChannel : subscriber.getChannels()) {
                             if (subscribedChannel.getUrl().equals(channel.getUrl())) {
@@ -91,7 +90,8 @@ public class WebMonitorImpl implements WebMonitor {
                             }
                         }
                         if (hasChannel) {
-                            tgController.sendMessage(podcast.getTitle(), subscriber.getId());
+                            tgController.sendMessage(podcast.getTitle() + "\n" + podcast.getPodcastUrl(),
+                                    subscriber.getId());
                         }
                     }
             }
