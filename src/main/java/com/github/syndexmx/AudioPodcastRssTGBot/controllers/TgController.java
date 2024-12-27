@@ -3,29 +3,20 @@ package com.github.syndexmx.AudioPodcastRssTGBot.controllers;
 import com.github.syndexmx.AudioPodcastRssTGBot.controllers.utils.CommandDetectors;
 import com.github.syndexmx.AudioPodcastRssTGBot.services.SubscriberService;
 import com.github.syndexmx.AudioPodcastRssTGBot.services.WebMonitor;
-import jakarta.xml.bind.DatatypeConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
-import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Document;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import org.telegram.telegrambots.meta.generics.TelegramBot;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 
 @Controller
 @Slf4j
@@ -95,7 +86,7 @@ public class TgController extends TelegramLongPollingBot {
             InputFile inputFile = new InputFile(new File(url));
             inputFile.setMedia(url);
             log.info("Input File : " + inputFile.getMediaName());
-            sender.setDocument(new InputFile(url)); // for example
+            sender.setDocument(new InputFile().setMedia(url));
             execute(sender);
         } catch (TelegramApiException e) {
             log.error("Telegrambot Exception : " + e.getMessage());
